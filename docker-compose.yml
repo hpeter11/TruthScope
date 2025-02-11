@@ -1,0 +1,19 @@
+version: "3.9"
+services:
+  backend:
+    build: ./backend
+    container_name: rag-backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/wikipedia_top_1000:/app/wikipedia_top_1000  # mount your articles directory
+      - ./backend/model:/app/model                            # mount your saved model folder
+    env_file:
+      - ./backend/.env
+  frontend:
+    build: ./frontend
+    container_name: rag-frontend
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
