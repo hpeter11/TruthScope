@@ -4,6 +4,7 @@ from nltk.tokenize import word_tokenize
 from rank_bm25 import BM25Okapi
 
 nltk.download('punkt', quiet=True)
+nltk.download('punkt_tab', quiet=True)
 
 ARTICLES_DIR = "wikipedia_top_1000"
 
@@ -54,4 +55,6 @@ def search(query, titles, docs, bm25, top_n=5):
 
 # On module load, build the index
 titles_global, docs_global = load_articles()
+if not docs_global:
+    raise ValueError("No articles found in the 'wikipedia_top_1000' directory. Please ensure it contains .txt files.")
 bm25_index = build_index(docs_global)

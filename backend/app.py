@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware  # Import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict
 from bm25 import search, titles_global, docs_global, bm25_index
@@ -6,6 +7,22 @@ from stance import predict_stance
 from gemini import generate_summary
 
 app = FastAPI(title="TruthScope RAG API")
+
+# Configure CORS
+origins = [
+    "http://localhost:3000",  # Allow requests from your frontend origin
+    # You can add more origins here if needed, or use ["*"] to allow all origins
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],  # Allow all HTTP methods
+    allow_headers=["*"],  # Allow all headers
+)
+
+# The rest of your code (endpoint definitions) follows...
 
 # Define color mapping for stance results.
 STANCE_COLORS = {
