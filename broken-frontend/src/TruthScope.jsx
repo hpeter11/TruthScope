@@ -1,4 +1,3 @@
-// src/TruthScope.jsx
 import React, { useState } from 'react';
 import { Send, ChevronDown, ChevronUp } from 'lucide-react';
 

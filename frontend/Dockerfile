@@ -1,26 +1,22 @@
-# Stage 1: Build the React app using Node
-FROM node:16-alpine as build
-
+# Stage 1: Build the React app
+FROM node:18-alpine AS build
 WORKDIR /app
 
-# Copy package files and install dependencies with legacy peer deps flag
-COPY package.json package-lock.json* ./
-RUN npm install --legacy-peer-deps
+# Copy package files and install dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
 
-# Copy the rest of the app source code
+# Copy the rest of the source code and build the production bundle
 COPY . .
+RUN yarn build
 
-# Build the app for production
-RUN npm run build
-
-# Stage 2: Serve the app with Nginx
+# Stage 2: Serve the built app using Nginx
 FROM nginx:alpine
-
-# Copy the build output from the previous stage to Nginx's html directory
+# Copy the production build from Stage 1 into the Nginx directory
 COPY --from=build /app/build /usr/share/nginx/html
 
-# Expose port 80 in the container
+# Expose port 80 (Nginx default)
 EXPOSE 80
 
-# Run Nginx in the foreground
+# Start Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
