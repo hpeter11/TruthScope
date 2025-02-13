@@ -1,4 +1,3 @@
-// src/TruthScope.jsx
 import React, { useState } from 'react';
 import { Send, ChevronDown, ChevronUp } from 'lucide-react';
 
@@ -12,11 +11,11 @@ const TruthScope = () => {
     if (!input.trim()) return;
 
     setIsLoading(true);
-    // Add the user query to messages
+    // Add query to message
     setMessages((prev) => [...prev, { type: 'user', content: input }]);
 
     try {
-      // Call the backend API (adjust the URL if necessary)
+      // Call backend api w/post request
       const response = await fetch('http://localhost:8000/query', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -39,15 +38,16 @@ const TruthScope = () => {
   const ArticleDropdown = ({ article }) => {
     const [isOpen, setIsOpen] = useState(false);
   
-    // Define the mapping first
+    // Need to set mapping bc no config files in TW 4.0
     const borderColorClasses = {
       red: "border-red-500",
       green: "border-green-500",
       orange: "border-orange-500",
-      gray: "border-gray-500", // if needed
+      gray: "border-gray-500",
     };
   
-    // Normalize the color and get the corresponding class
+    // Have to normalize and get corres class
+    // Only renders this way
     const normalizedColor = article.color.toLowerCase();
     const borderClass = borderColorClasses[normalizedColor] || "border-black";
   
@@ -81,7 +81,7 @@ const TruthScope = () => {
           <p className="text-gray-600 mt-2">Ask me a question!</p>
         </div>
 
-        {/* Messages Container */}
+        {/* Messages container */}
         <div className="flex-1 overflow-auto p-4">
           {messages.map((message, index) => (
             <div key={index} className="mb-4">

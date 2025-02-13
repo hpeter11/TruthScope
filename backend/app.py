@@ -8,21 +8,18 @@ from gemini import generate_summary
 
 app = FastAPI(title="TruthScope RAG API")
 
-# Configure CORS
+# Beed ti set up cors lol
 origins = [
-    "http://localhost:3000",  # Allow requests from your frontend origin
-    # You can add more origins here if needed, or use ["*"] to allow all origins
+    "http://localhost:3000",  # allow requests from front
 ]
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],  # Allow all HTTP methods
-    allow_headers=["*"],  # Allow all headers
+    allow_methods=["*"],  # allow http
+    allow_headers=["*"],  # allow headers
 )
-
-# The rest of your code (endpoint definitions) follows...
 
 # Define color mapping for stance results.
 # STANCE_COLORS = {
@@ -39,6 +36,7 @@ STANCE_COLORS = {
     "unrelated": "gray"
 }
 
+# Build classes for data transfer
 class QueryRequest(BaseModel):
     query: str
 
@@ -52,25 +50,26 @@ class QueryResponse(BaseModel):
     articles: List[ArticleResult]
     summary: str
 
+# Post requests
 @app.post("/query", response_model=QueryResponse)
 def process_query(request: QueryRequest):
     if not request.query.strip():
         raise HTTPException(status_code=400, detail="Query cannot be empty.")
     
-    # 1. BM25 Search (Section 2)
+    # Call bm25 base on wiki articles
     articles = search(request.query, titles_global, docs_global, bm25_index, top_n=5)
     
-    # 2. For each article, run stance detection (Section 3)
+    # Run stance detection
     for article in articles:
         stance = predict_stance(request.query, article["content"])
         article["stance"] = stance
         article["color"] = STANCE_COLORS.get(stance, "gray")
     
-    # 3. Build a Gemini system prompt (Section 4) and get a summary
+    # Build system prompt and get response from Gemini
     summary = generate_summary(request.query, articles)
     
-    # 4. Return the results
-    # The response model expects a list of ArticleResult objects.
+    # Return res
+    # The response model expects article results obj
     article_results = [
         {
             "title": art["title"],

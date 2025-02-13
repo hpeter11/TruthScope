@@ -10,8 +10,7 @@ ARTICLES_DIR = "wikipedia_top_1000"
 
 def load_articles():
     """
-    Load the Wikipedia articles from ARTICLES_DIR.
-    Returns a tuple: (titles, docs)
+    Load the Wikipedia articles from articles dir
     """
     titles = []
     docs = []
@@ -31,7 +30,7 @@ def load_articles():
 
 def build_index(docs):
     """
-    Tokenize documents and build a BM25 index.
+    Tokenize docs and build bm25 index (basic)
     """
     tokenized_docs = [word_tokenize(doc.lower()) for doc in docs]
     bm25 = BM25Okapi(tokenized_docs)
@@ -39,8 +38,9 @@ def build_index(docs):
 
 def search(query, titles, docs, bm25, top_n=5):
     """
-    Given a query, use BM25 to return the top_n matching articles.
-    Returns a list of dicts: [{ "title": ..., "content": ... }, ...]
+    Use query with bm25 to return top n docs
+    For now, n=5
+    Returns list of dicts
     """
     tokenized_query = word_tokenize(query.lower())
     scores = bm25.get_scores(tokenized_query)
@@ -53,7 +53,7 @@ def search(query, titles, docs, bm25, top_n=5):
         })
     return results
 
-# On module load, build the index
+# On module load, build index
 titles_global, docs_global = load_articles()
 if not docs_global:
     raise ValueError("No articles found in the 'wikipedia_top_1000' directory. Please ensure it contains .txt files.")

@@ -6,8 +6,8 @@ services:
     ports:
       - "8000:8000"
     volumes:
-      - ./backend/wikipedia_top_1000:/app/wikipedia_top_1000  # mount your articles directory
-      - ./backend/model:/app/model                            # mount your saved model folder
+      - ./backend/wikipedia_top_1000:/app/wikipedia_top_1000  # mount articles
+      - ./backend/model:/app/model                            # mount xaved model
     env_file:
       - ./backend/.env
   frontend:

@@ -1,34 +1,92 @@
 # TruthScope
-## Summarization & Fact-Checking Tool (Monorepo)
 
-TruthScope is an early-stage project aimed at providing retrieval-augmented text summarization and fact-checking. The goal is to let users submit text or claims, retrieve relevant sources, summarize them, and determine whether the claim is supported or contradicted.
+TruthScope is a Dockerized fact-checking tool that leverages a small collection of the most viewed Wikipedia articles (from February 10th, 2025) to verify claims. It uses BM25 for document retrieval, a custom-built stance detection model to assess article relevance, and the Gemini API with a custom system prompt and context to generate concise summaries for Retrieval Augmented Generation (RAG).
 
-Status: Pre-Alpha / Under Development. No major functionality is implemented yet. Check back soon for updates!
+---
 
-### Table of Contents
-1. Project Vision
-2. Features (Planned)
-3. Tech Stack
-4. License
+## Features
 
-## Project Vision
-- User-Focused: Provide a web interface where users can paste an article or claim and quickly see a concise summary and fact-verification result.
-- Retrieval-Augmented: Integrate advanced retrieval systems (e.g., DeepSeek or BM25) to fetch relevant supporting or contradicting evidence.
-- Modular Pipeline: Combine summarization with stance detection to offer a clear verdict (supports/refutes/uncertain).
-- Scalable: Eventually handle larger datasets or multiple domains with minimal reconfiguration.
+- **Dockerized Setup:** Run the entire application with a single Docker Compose command.
+- **Fact Checking:** Retrieve and analyze relevant Wikipedia articles based on your query.
+- **Stance Detection:** Determine if an article supports, contradicts, or is irrelevant to the claim.
+- **Summarization:** Get a brief summary that consolidates the evidence.
+- **Frontend & Backend:** A React frontend communicates seamlessly with a FastAPI backend.
 
-## Features (Planned)
-- Article Summarization: Summaries from state-of-the-art models (T5, BART, or similar).
-- Fact-Checking: Stance detection (supports/refutes) against relevant references.
-- Toggleable Retrieval: Switch between DeepSeek-based retrieval or a simpler local method (BM25/Sentence-BERT).
-- User-Friendly React Front End: Clean interface for uploading/pasting text and viewing results.
-- Docker Integration: Simple setup with Docker Compose to run both the back end and front end.
+---
 
-## Tech Stack
-- Backend: Python, PyTorch, Hugging Face Transformers, FastAPI or Flask (TBD).
-- Frontend: React (JavaScript/TypeScript).
-- Deployment: Docker & Docker Compose (planned).
-- Licensing: Apache 2.0 (see License).
+## Requirements
 
-## License
-This project is licensed under the terms of the Apache License 2.0. You are free to use, modify, and distribute this project in compliance with the license.
+- [Docker](https://docs.docker.com/get-docker/)
+- [Docker Compose](https://docs.docker.com/compose/install/)
+
+---
+
+## Installation & Setup
+
+1. **Clone the Repository**
+
+   ```bash
+   git clone https://github.com/hpeter11/TruthScope.git
+   ```
+
+2. **Configure the Gemini API Key**
+
+   In the `backend` directory, create a `.env` file with your Gemini API key:
+
+   ```dotenv
+   GEMINI_API_KEY=your_gemini_api_key_here
+   ```
+
+3. **Prepare the Database & Model**
+
+   - **Wikipedia Articles:** Ensure that the `backend/wikipedia_top_1000` folder contains the most viewed Wikipedia articles (in `.txt` format).
+   - **Stance Model:** Place your saved model file in the `backend/model` folder (the expected file is `TruthScope.pth`).
+
+4. **Build and Run the Application**
+
+   From the root directory, execute:
+
+   ```bash
+   docker compose up --build
+   ```
+
+   This command will build both the backend and frontend containers and start the services.
+
+---
+
+## Usage
+
+- **Frontend:** Open your browser and navigate to [http://localhost:3000](http://localhost:3000) to interact with TruthScope.
+- **Backend:** The FastAPI backend runs on port `8000` and exposes the `/query` endpoint.
+
+Simply type your question into the interface and receive a list of related Wikipedia articles along with a summary of the fact-checking results.
+
+---
+
+## Project Structure
+
+```
+truthscope/
+├── backend
+│   ├── .env             # Contains the GEMINI_API_KEY
+│   ├── Dockerfile       # Dockerfile for backend service
+│   ├── wikipedia_top_1000/  # Directory with Wikipedia articles (.txt files)
+│   ├── model/           # Directory with the saved stance detection model
+│   └── ...              # FastAPI application code
+├── frontend
+│   ├── Dockerfile       # Dockerfile for frontend service (React app + Nginx)
+│   ├── package.json     # Node project file
+│   └── ...              # React application code
+└── docker-compose.yml   # Docker Compose configuration
+```
+
+---
+
+## Notes
+
+- The Wikipedia articles are a pre-selected dataset (the most viewed on February 10th) due to resource constraints.
+- Make sure to add your Gemini API key in the backend's `.env` file before running the project.
+
+---
+
+Have fun! 

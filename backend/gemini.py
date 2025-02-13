@@ -10,8 +10,7 @@ genai.configure(api_key=api_key)
 
 def generate_summary(query: str, articles: list) -> str:
     """
-    Given the user query and a list of articles (each a dict with 'title' and 'content'),
-    build a system prompt and call Gemini to generate a summary answer.
+    Uses query and articles to create system prompt for Gemini to get a result.
     """
     # Build a prompt that lists the query and each article's title and a short excerpt.
     prompt = f"You are given the following user query:\n\"{query}\"\n\n"
@@ -19,8 +18,11 @@ def generate_summary(query: str, articles: list) -> str:
     prompt += "For each article, assess whether its content supports, contradicts, or is irrelevant to the query. Then, "
     prompt += "summarize whether the articles provide corroborating evidence or not.\n\n"
     for article in articles:
-        # Use only the first 300 characters of content as excerpt.
-        excerpt = article["content"][:300] + "..."
+        # Use only the first 300 characters of content
+        #excerpt = article["content"][:300] + "..."
+
+        #Gemini should have 1 mil token context window or something
+        excerpt = article["content"] + "..."
         prompt += f"Title: {article['title']}\nExcerpt: {excerpt}\n\n"
     prompt += "Provide a brief summary answer."
     
