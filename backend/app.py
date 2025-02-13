@@ -25,11 +25,18 @@ app.add_middleware(
 # The rest of your code (endpoint definitions) follows...
 
 # Define color mapping for stance results.
+# STANCE_COLORS = {
+#     "agree": "green",
+#     "disagree": "red",
+#     "discuss": "orange",
+#     "unrelated": "orange"
+# }
+
 STANCE_COLORS = {
-    "agree": "green",
-    "disagree": "red",
-    "discuss": "orange",
-    "unrelated": "orange"
+    "agree": "red",
+    "disagree": "green",
+    "discuss": "black",
+    "unrelated": "gray"
 }
 
 class QueryRequest(BaseModel):

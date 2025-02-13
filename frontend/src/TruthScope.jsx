@@ -38,9 +38,21 @@ const TruthScope = () => {
 
   const ArticleDropdown = ({ article }) => {
     const [isOpen, setIsOpen] = useState(false);
-    
+  
+    // Define the mapping first
+    const borderColorClasses = {
+      red: "border-red-500",
+      green: "border-green-500",
+      orange: "border-orange-500",
+      gray: "border-gray-500", // if needed
+    };
+  
+    // Normalize the color and get the corresponding class
+    const normalizedColor = article.color.toLowerCase();
+    const borderClass = borderColorClasses[normalizedColor] || "border-black";
+  
     return (
-      <div className={`mb-2 border-2 rounded-lg p-3 border-${article.color}-500`}>
+      <div className={`mb-2 border-2 rounded-lg p-3 ${borderClass}`}>
         <div 
           className="flex justify-between items-center cursor-pointer"
           onClick={() => setIsOpen(!isOpen)}
@@ -56,6 +68,8 @@ const TruthScope = () => {
       </div>
     );
   };
+  
+  
 
   return (
     <div className="flex flex-col h-screen bg-gray-50">

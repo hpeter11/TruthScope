@@ -1,22 +1,20 @@
-# Stage 1: Build the React app
-FROM node:18-alpine AS build
+# Stage 1: Build the Vite app
+FROM node:18-alpine AS builder
 WORKDIR /app
 
 # Copy package files and install dependencies
-COPY package.json yarn.lock ./
-RUN yarn install --frozen-lockfile
+COPY package*.json ./
+RUN npm install
 
-# Copy the rest of the source code and build the production bundle
+# Copy all source files and build the app
 COPY . .
-RUN yarn build
+RUN npm run build
 
-# Stage 2: Serve the built app using Nginx
+# Stage 2: Serve the app with Nginx
 FROM nginx:alpine
-# Copy the production build from Stage 1 into the Nginx directory
-COPY --from=build /app/build /usr/share/nginx/html
+# Copy the production build (by default, Vite outputs to "dist") to Nginx's html folder
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Expose port 80 (Nginx default)
+# Expose port 80 (default Nginx port)
 EXPOSE 80
-
-# Start Nginx in the foreground
 CMD ["nginx", "-g", "daemon off;"]
